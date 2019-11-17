@@ -1,18 +1,18 @@
 #' the function to update alpha
-#' 
+#'
 #' update the sub-matrix alpha to convergence to its local minimum gradually
-#' 
+#'
 #' @param WL A list of similarity matrices
-#' 
+#'
 #' @param update_L_list A list with N+2 elements, the former N as modality private sub-matrices, the Nth as the shared sub-matrix and the last one as the current loss
-#' 
+#'
 #' @param lambda A parameter to set the relative weight of the group sparsity constraints
-#' 
+#'
 #' @return A list containing the updated result in this iteration
 
 #' @author Xiaoyao Yin
-#' @examples 
-#' 
+#' @examples
+#'
 #' WL <- simu_data_gen()
 #' WL[[1]] <- affinityMatrix(dist2eu(Standard_Normalization(WL[[1]]),Standard_Normalization(WL[[1]])))
 #' WL[[2]] <- affinityMatrix(dist2eu(Standard_Normalization(WL[[2]]),Standard_Normalization(WL[[2]])))
@@ -62,46 +62,49 @@ update_alpha <- function(WL,update_L_list,lambda)
           X[1:length(index),(unit_col*(k-1)+1):(unit_col*k)] <- WL[[k]][index,]-alpha1[index,-j]%*%update_L_list[[k]][-j,]
           D[1,(unit_col*(k-1)+1):(unit_col*k)] <- update_L_list[[k]][j,]
         }
-        
+
       }
-      #       print(paste("i is ",i,"j is ",j,sep=" "))
-      #       print(paste("dim x is ",dim(X),"dim D is ",dim(D),sep="  "))
       shrink <- D%*%t(D)
-      yy <- X%*%t(D)/(shrink[1,1])
-      lambda1 <- lambda/(shrink[1,1])
-      abs_y <- sort(abs(yy),decreasing = T)
-      count00 <- 0
-      for (k in 1:length(abs_y))
+      yy <- X%*%t(D)
+      sum_y <- sum(abs(yy))
+      if (sum_y>lambda)
       {
-        aa<- (sum(abs_y[1:k])-lambda1)/k
-        if (aa<abs_y[k])
-        {
-          count00 <- k
-        }
-      }
-      if (count00==0)
-      {
-        yy <- 0
-      }
-      else
-      {
-        tao <- (sum(abs_y[1:count00])-lambda1)/count00
+        yy <- X%*%t(D)/(shrink[1,1])
+        lambda1 <- lambda/(shrink[1,1])
+        abs_y <- sort(abs(yy),decreasing = T)
+        count00 <- 0
         for (k in 1:length(abs_y))
         {
-          if (yy[k]>=tao)
+          aa<- (sum(abs_y[1:k])-lambda1)/k
+          if (aa<abs_y[k])
           {
-            yy[k] <- tao
-          }
-          else if (yy[k]<=(-tao))
-          {
-            yy[k] <- (-tao)
-          }
-          else
-          {
-            yy[k] <- 0
+            count00 <- k
           }
         }
-        
+        if (count00==0)
+        {
+          yy <- 0
+        }
+        else
+        {
+          tao <- (sum(abs_y[1:count00])-lambda1)/count00
+          for (k in 1:length(abs_y))
+          {
+            if (yy[k]>=tao)
+            {
+              yy[k] <- tao
+            }
+            else if (yy[k]<=(-tao))
+            {
+              yy[k] <- (-tao)
+            }
+            else
+            {
+              yy[k] <- 0
+            }
+          }
+
+        }
       }
       new_alpha1[index,j] <- yy
       loss <- loss+max(abs(yy))

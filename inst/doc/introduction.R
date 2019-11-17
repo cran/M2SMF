@@ -1,25 +1,25 @@
-## ----setup, include = FALSE----------------------------------------------
+## ----setup, include = FALSE---------------------------------------------------
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  #Install
 #  install.packages('M2SMF')
 #  #Load
 #  library(M2SMF)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  install.packages('/path/to/file/M2SMF.tar.gz',repos=NULL,type="source")
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  data_list = simu_data_gen()
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  truelabel = rep(c(1:5),each=20)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  #Assign the number of samples to permute
 #  pert_num = 10
 #  #Radomly sample *pert_num* samples from all the samples
@@ -32,32 +32,32 @@ knitr::opts_chunk$set(
 #  temp_data[index2,]  =  sub_data
 #  data_list[[1]] = temp_data
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  for (i in 1:length(data_list))
 #  {
 #      data_list[[i]] = Standard_Normalization(data_list[[i]])
 #  }
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  for (i in 1:length(data_list))
 #  {
 #      data_list[[i]] = dist2eu(data_list[[i]],data_list[[i]])
 #  }
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  for (i in 1:length(data_list))
 #  {
 #      data_list[[i]] = affinityMatrix(data_list[[i]])
 #  }
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  #Assign the parameters
 #  lambda = 0.25
 #  theta = 10^-4
 #  k = 5
 #  res = M2SMF(data_list,lambda,theta,k)
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  #Assign the interval of k according to your data
 #  k_min = 2
 #  k_max = 30
@@ -72,7 +72,7 @@ knitr::opts_chunk$set(
 #  #The most proper is the one with maximum modularity
 #  best_k = which(modularity_data==max(modularity_data),T)+k_min-1
 
-## ----eval=FALSE----------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  #Calculate the NMI of our method *M2SMF*
 #  M2SMF_res = M2SMF(data_list,lambda,theta,i)
 #  M2SMF_cluster = M2SMF_res$clusters
